@@ -1,7 +1,7 @@
 ## Projeto SpringBoot com MongoDB
 
 # Objetivo
-Criar um projeto com Spring Boot com banco NoSQL MongoDB, utilizar classes como Repository e Service para conexão e fornecer um EndPoint de usuários
+Criar um projeto com Spring Boot com banco NoSQL MongoDB, utilizar classes como Repository e Service para conexão e fornecer um EndPoint de usuários e de post com comentarios
 
 # Diagrama de dominio 
 ![image](https://github.com/victorvaz001/ProjetoSpringBootMongoDB/assets/42657636/f27fb4d0-fdaa-4048-994f-0b2241bdecd6)
