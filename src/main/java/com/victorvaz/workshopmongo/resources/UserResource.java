@@ -57,5 +57,11 @@ public class UserResource { //Controlador REST acessa o serviço
 		return ResponseEntity.created(uri).build(); //retorna o codigo 201, quando e criado um novo recurso
 	}
 	
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable String id){ 				
+		service.delete(id);
+		return ResponseEntity.noContent().build();
+	}
+	
 	
 }
