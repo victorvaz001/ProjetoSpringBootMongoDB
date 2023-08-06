@@ -18,50 +18,59 @@ import com.victorvaz.workshopmongo.dto.UserDTO;
 import com.victorvaz.workshopmongo.services.UserService;
 
 @RestController
-@RequestMapping(value="/users")
-public class UserResource { //Controlador REST acessa o serviço
-	
-	@Autowired //Injetando o serviço
-	private UserService service; 
-	
-	@RequestMapping(method=RequestMethod.GET)
-	public ResponseEntity<List<UserDTO>> findAll(){ //ResponseEntity -> Retorna possiveis cabecalhos, erros		
+@RequestMapping(value = "/users")
+public class UserResource { // Controlador REST acessa o serviço
+
+	@Autowired // Injetando o serviço
+	private UserService service;
+
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<List<UserDTO>> findAll() { // ResponseEntity -> Retorna possiveis cabecalhos, erros
 		List<User> list = service.findAll();
-		
-		//Converte cada objeto da lista original para um DTO
+
+		// Converte cada objeto da lista original para um DTO
 		List<UserDTO> listDto = list.stream().map(x -> new UserDTO(x)).collect(Collectors.toList());
-		return ResponseEntity.ok().body(listDto); //Instancia o objeto com corpo de resposta, no caso o 'list'
+		return ResponseEntity.ok().body(listDto); // Instancia o objeto com corpo de resposta, no caso o 'list'
 	}
-	
-	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ResponseEntity<UserDTO> findById(@PathVariable String id){ //ResponseEntity -> Retorna possiveis cabecalhos, erros				
-		/*@PathVariable -> para dizer que o id do argumento seja casado com o id da url*/
-		
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public ResponseEntity<UserDTO> findById(@PathVariable String id) { // ResponseEntity -> Retorna possiveis
+																		// cabecalhos, erros
+		/*
+		 * @PathVariable -> para dizer que o id do argumento seja casado com o id da url
+		 */
+
 		User obj = service.findById(id);
-		
-	
-		return ResponseEntity.ok().body(new UserDTO(obj)); //retorna o (obj) de User convertido para UserDTO
+
+		return ResponseEntity.ok().body(new UserDTO(obj)); // retorna o (obj) de User convertido para UserDTO
 	}
-	
-	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Void> insert(@RequestBody UserDTO objDto){ 	
-		
-		/*@RequestBody -> usado para que o EndPoint aceita o objDto*/
-		
-		User obj = service.fromDTO(objDto);	// converte o objDto para user
+
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<Void> insert(@RequestBody UserDTO objDto) {
+
+		/* @RequestBody -> usado para que o EndPoint aceita o objDto */
+
+		User obj = service.fromDTO(objDto); // converte o objDto para user
 		obj = service.insert(obj);
-		
-		/*Pega o endereço do novo objeto que foi incerido*/
+
+		/* Pega o endereço do novo objeto que foi incerido */
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
-		
-		return ResponseEntity.created(uri).build(); //retorna o codigo 201, quando e criado um novo recurso
+
+		return ResponseEntity.created(uri).build(); // retorna o codigo 201, quando e criado um novo recurso
 	}
-	
-	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
-	public ResponseEntity<Void> delete(@PathVariable String id){ 				
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable String id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-	
-	
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Void> update(@RequestBody UserDTO objDto, @PathVariable String id) {
+		User obj = service.fromDTO(objDto);
+		obj.setId(id); // garante que venha o id da requisição
+		obj = service.update(obj);
+		return ResponseEntity.noContent().build();
+	}
+
 }
