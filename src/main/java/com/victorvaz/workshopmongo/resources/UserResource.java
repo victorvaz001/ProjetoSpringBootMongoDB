@@ -1,14 +1,17 @@
 package com.victorvaz.workshopmongo.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.victorvaz.workshopmongo.domain.User;
 import com.victorvaz.workshopmongo.dto.UserDTO;
@@ -38,6 +41,20 @@ public class UserResource { //Controlador REST acessa o serviço
 		
 	
 		return ResponseEntity.ok().body(new UserDTO(obj)); //retorna o (obj) de User convertido para UserDTO
+	}
+	
+	@RequestMapping(method=RequestMethod.POST)
+	public ResponseEntity<Void> insert(@RequestBody UserDTO objDto){ 	
+		
+		/*@RequestBody -> usado para que o EndPoint aceita o objDto*/
+		
+		User obj = service.fromDTO(objDto);	// converte o objDto para user
+		obj = service.insert(obj);
+		
+		/*Pega o endereço do novo objeto que foi incerido*/
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		
+		return ResponseEntity.created(uri).build(); //retorna o codigo 201, quando e criado um novo recurso
 	}
 	
 	
